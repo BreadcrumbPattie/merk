@@ -754,6 +754,8 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_WTYPE',"unknown")
 	addTemporaryAlias('_YEAR',year)
 
+	return TEMPORARY_ALIAS
+
 def fullInterpolate(gui,window,user_input):
 	buildTemporaryAliases(gui,window)
 
@@ -762,25 +764,16 @@ def fullInterpolate(gui,window,user_input):
 	return user_input
 
 def handleChatCommands(gui,window,user_input):
-	buildTemporaryAliases(gui,window)
-
-	user_input = interpolateAliases(user_input)
 	retval = executeChatCommands(gui,window,user_input,False)
 	clearTemporaryAliases()
 	return retval
 
 def handleCommonCommands(gui,window,user_input):
-	buildTemporaryAliases(gui,window)
-
-	user_input = interpolateAliases(user_input)
 	retval = executeCommonCommands(gui,window,user_input,False)
 	clearTemporaryAliases()
 	return retval
 
 def handleScriptCommands(gui,window,user_input,line_number,script_id):
-	buildTemporaryAliases(gui,window)
-
-	user_input = interpolateAliases(user_input)
 
 	if window.window_type!=SERVER_WINDOW:
 		if executeChatCommands(gui,window,user_input,True,line_number,script_id):
@@ -1320,6 +1313,14 @@ def display_find_files(window,target):
 	if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: QApplication.restoreOverrideCursor()
 
 def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=None):
+
+	buildTemporaryAliases(gui,window)
+	if is_script==False:
+		if config.INTERPOLATE_ALIASES_INTO_INPUT==True:
+			user_input = interpolateAliases(user_input)
+	else:
+		user_input = interpolateAliases(user_input)
+
 	user_input = user_input.strip()
 	tokens = user_input.split()
 
@@ -1555,8 +1556,15 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 	return False
 
 def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_id=None):
-	user_input = user_input.strip()
 
+	buildTemporaryAliases(gui,window)
+	if is_script==False:
+		if config.INTERPOLATE_ALIASES_INTO_INPUT==True:
+			user_input = interpolateAliases(user_input)
+	else:
+		user_input = interpolateAliases(user_input)
+
+	user_input = user_input.strip()
 	tokens = user_input.split()
 
 	if is_script:
@@ -8185,6 +8193,9 @@ class ScriptThread(QThread):
 									if errors!=None:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {errors}"])
 										loop = False
+								else:
+									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: aliases are disabled"])
+									loop = False
 								continue
 
 						# |========|
@@ -8235,6 +8246,9 @@ class ScriptThread(QThread):
 										loop = False
 									else:
 										script_only_command = True
+								else:
+									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: aliases are disabled"])
+									loop = False
 								continue
 
 						# |======|

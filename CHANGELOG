@@ -140,6 +140,12 @@ What's New:
   dialog and the config command.
 * New script-only command: random. This generates a random integer in a given
   range, and stores the integer in an alias.
+* Bugfix: disabling aliases now properly throws an error if /alias or random
+  are called in a script.
+* Changed the command-line "banner" logo that appears when using the -h flag.
+* Bugfix: changed how aliases are interpolated into input, whether in user
+  input typed into the text input widget or in scripts. This should fix some
+  bugs that might pop up when switching contexts, or using hotkeys.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

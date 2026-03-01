@@ -3142,13 +3142,6 @@ class Merk(QMainWindow):
 
 	def handleUserInputHotkey(self,window,user_input):
 
-		# Build temporary aliases
-		commands.buildTemporaryAliases(self,window)
-
-		# Interpolate aliases into user input
-		if config.INTERPOLATE_ALIASES_INTO_INPUT:
-			user_input = commands.interpolateAliases(user_input)
-
 		# Handle chat commands
 		if commands.handleChatCommands(self,window,user_input): return
 
@@ -3159,13 +3152,6 @@ class Merk(QMainWindow):
 		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def handleConsoleInputHotkey(self,window,user_input):
-
-		# Build temporary aliases
-		commands.buildTemporaryAliases(self,window)
-
-		# Interpolate aliases into user input
-		if config.INTERPOLATE_ALIASES_INTO_INPUT:
-			user_input = commands.interpolateAliases(user_input)
 		
 		# Handle common commands
 		if commands.handleCommonCommands(self,window,user_input): return
@@ -3175,13 +3161,6 @@ class Merk(QMainWindow):
 
 
 	def handleUserInput(self,window,user_input):
-
-		# Build temporary aliases
-		commands.buildTemporaryAliases(self,window)
-
-		# Interpolate aliases into user input
-		if config.INTERPOLATE_ALIASES_INTO_INPUT:
-			user_input = commands.interpolateAliases(user_input)
 
 		# Handle chat commands
 		if commands.handleChatCommands(self,window,user_input): return
@@ -3212,13 +3191,6 @@ class Merk(QMainWindow):
 						w.writeText(t)
 
 	def handleConsoleInput(self,window,user_input):
-
-		# Build temporary aliases
-		commands.buildTemporaryAliases(self,window)
-
-		# Interpolate aliases into user input
-		if config.INTERPOLATE_ALIASES_INTO_INPUT:
-			user_input = commands.interpolateAliases(user_input)
 		
 		# Handle common commands
 		if commands.handleCommonCommands(self,window,user_input): return

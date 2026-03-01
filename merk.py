@@ -85,9 +85,10 @@ parser = argparse.ArgumentParser(
 	formatter_class=argparse.RawDescriptionHelpFormatter,
 	add_help=False,
 	description=f'''
-┳┳┓┏┓┳┓┓┏┓  ┳┳┓┏┓  ┏┓┓ ┳┏┓┳┓┏┳┓
-┃┃┃┣ ┣┫┃┫   ┃┣┫┃   ┃ ┃ ┃┣ ┃┃ ┃  Version
-┛ ┗┗┛┛┗┛┗┛  ┻┛┗┗┛  ┗┛┗┛┻┗┛┛┗ ┻  {APPLICATION_VERSION}
+┏┳┓┏━╸┏━┓╻┏    ╻┏━┓┏━╸   ┏━╸╻  ╻┏━╸┏┓╻╺┳╸
+┃┃┃┣╸ ┣┳┛┣┻┓   ┃┣┳┛┃     ┃  ┃  ┃┣╸ ┃┗┫ ┃ 
+╹ ╹┗━╸╹┗╸╹ ╹   ╹╹┗╸┗━╸   ┗━╸┗━╸╹┗━╸╹ ╹ ╹ 
+Version {APPLICATION_VERSION}
 
 https://github.com/nutjob-laboratories/merk
 https://github.com/danhetrick

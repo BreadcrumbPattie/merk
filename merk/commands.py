@@ -329,9 +329,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"reconnectssl",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"xreconnectssl",'')
 
-	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
-		AUTOCOMPLETE[config.ISSUE_COMMAND_SYMBOL+"s"] = config.ISSUE_COMMAND_SYMBOL+"s "
-
 	if new_autocomplete!=None:
 		if isinstance(new_autocomplete, list):
 			for a in new_autocomplete:
@@ -450,9 +447,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"folder PATH [PATH...]</b>", f"Opens PATH(s) in the default file manager" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fade [SERVER] [WINDOW] PERCENTAGE</b>", f"Sets the transparency of a window by PERCENTAGE. Call without arguments to see the current subwindow's transparency" ],
 	]
-
-	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
-		COMMAND_HELP_INFORMATION.append(["<b>"+config.ISSUE_COMMAND_SYMBOL+"s FILENAME [ARGUMENTS]</b>", f"Shortcut for the {config.ISSUE_COMMAND_SYMBOL}script command"])
 
 	if config.SCRIPTING_ENGINE_ENABLED:
 		for m in USER_MACROS:
@@ -1595,14 +1589,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					else:
 						user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script}"
 						tokens = user_input.split()
-
-	# |----|
-	# | /s |
-	# |----|
-	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
-				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
 	# |-------|
 	# | /fade |

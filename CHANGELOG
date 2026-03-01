@@ -146,6 +146,7 @@ What's New:
 * Bugfix: changed how aliases are interpolated into input, whether in user
   input typed into the text input widget or in scripts. This should fix some
   bugs that might pop up when switching contexts, or using hotkeys.
+* Removed the /s command shortcut for /script.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

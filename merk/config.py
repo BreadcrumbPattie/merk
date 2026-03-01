@@ -239,7 +239,6 @@ MAXIMUM_INSERT_DEPTH = 10
 WINDOWBAR_SHOW_UNREAD_MESSAGES = True
 WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH = 1000
 WINDOWBAR_ENTRY_MENU = True
-INCLUDE_SCRIPT_COMMAND_SHORTCUT = True
 DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = True
 CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = False
 HALT_SCRIPT_EXECUTION_ON_ERROR = True
@@ -594,7 +593,6 @@ def build_settings():
 		"halt_script_execution_on_error": HALT_SCRIPT_EXECUTION_ON_ERROR,
 		"create_window_for_incoming_private_notices": CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES,
 		"do_not_create_private_chat_windows_for_ignored_users": DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS,
-		"include_script_command_shortcut": INCLUDE_SCRIPT_COMMAND_SHORTCUT,
 		"windowbar_entry_context_menu": WINDOWBAR_ENTRY_MENU,
 		"windowbar_unread_message_animation_length": WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH,
 		"windowbar_show_unread_messages": WINDOWBAR_SHOW_UNREAD_MESSAGES,
@@ -1150,8 +1148,6 @@ def patch_settings(settings):
 		settings["create_window_for_incoming_private_notices"] = CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES
 	if not "do_not_create_private_chat_windows_for_ignored_users" in settings:
 		settings["do_not_create_private_chat_windows_for_ignored_users"] = DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS
-	if not "include_script_command_shortcut" in settings:
-		settings["include_script_command_shortcut"] = INCLUDE_SCRIPT_COMMAND_SHORTCUT
 	if not "windowbar_entry_context_menu" in settings:
 		settings["windowbar_entry_context_menu"] = WINDOWBAR_ENTRY_MENU
 	if not "windowbar_unread_message_animation_length" in settings:
@@ -1756,7 +1752,6 @@ def load_settings(filename):
 	global WINDOWBAR_SHOW_UNREAD_MESSAGES
 	global WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH
 	global WINDOWBAR_ENTRY_MENU
-	global INCLUDE_SCRIPT_COMMAND_SHORTCUT
 	global DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS
 	global CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES
 	global HALT_SCRIPT_EXECUTION_ON_ERROR
@@ -2116,7 +2111,6 @@ def load_settings(filename):
 		HALT_SCRIPT_EXECUTION_ON_ERROR = settings["halt_script_execution_on_error"]
 		CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = settings["create_window_for_incoming_private_notices"]
 		DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = settings["do_not_create_private_chat_windows_for_ignored_users"]
-		INCLUDE_SCRIPT_COMMAND_SHORTCUT = settings["include_script_command_shortcut"]
 		WINDOWBAR_ENTRY_MENU = settings["windowbar_entry_context_menu"]
 		WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH = settings["windowbar_unread_message_animation_length"]
 		WINDOWBAR_SHOW_UNREAD_MESSAGES = settings["windowbar_show_unread_messages"]

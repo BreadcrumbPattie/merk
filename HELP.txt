@@ -423,10 +423,6 @@ Appearance:
 <td>Restores a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to restore the server window</td>
 </tr>
 <tr>
-<td><code>/s FILENAME [ARGUMENTS]</code></td>
-<td>A shortcut for the <code>/script</code> command</td>
-</tr>
-<tr>
 <td><code>/script FILENAME [ARGUMENTS]</code></td>
 <td>Executes a list of commands in a file</td>
 </tr>

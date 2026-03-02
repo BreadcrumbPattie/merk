@@ -504,6 +504,11 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def fade(self,perc=None):
+		if perc==None: return round(self._gui.windowOpacity() * 100)
+		if perc<=100 and perc>0:
+			self._gui.setWindowOpacity(perc/100)
+
 	def current(self):
 		if self._gui!=None:
 			w = self._gui.getCurrentChat()
@@ -886,6 +891,7 @@ BUILT_IN = [
 	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
 	'browser', 'folder', 'current', 'uncolor', 'unmarkdown',
 	'markup','unmarkup','demojize','deasciimojize', 'location',
+	'fade',
 ]
 
 def uninstall(obj):

@@ -116,7 +116,7 @@ There are four libraries that comes bundled with **MERK**:
         - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
         - Scripts have rudimentary flow control, including `if` and `goto`
         - Over 80 different commands are available for scripts or for use in the client
-        - 12 script-only commands
+        - 13 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -307,7 +307,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
 | `/focus [SERVER] [WINDOW]`              | Sets focus on a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to set focus on the server window                                       |
 | `/folder PATH [PATH...]`              | Opens `PATH`(s) in the default file manager               |
-| `goto LINE_NUMBER`                         | Moves execution of the script to `LINE_NUMBER`. The only script-only command that can be issued from an `if` command. *Can only be called from scripts*  |
+| `goto TARGET`                         | Moves execution of the script to `TARGET`. The only script-only command that can be issued from an `if` command. *Can only be called from scripts*  |
 | `halt [MESSAGE...]`                       | Halts a script's execution, and displays an error `MESSAGE` with line number and file name. *Can only be called from scripts*       |
 | `/help [COMMAND]`                                 | Displays command usage information                  |
 | `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to hide the server window      |
@@ -351,13 +351,14 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
 | `/_rehash`                              | Causes the server to reprocess and reload configuration files. May only be issued by IRC operators |
-| `/rem [TEXT...]`                        | Does nothing. Can be used as a target for `goto`                                                                              |
+| `/rem [TEXT...]`                        | Does nothing. Can be used for comments                                                     |
 | `restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. *Can only be called from scripts*                                                                                |
 | `/restore [SERVER] [WINDOW]`              | Restores a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to restore the server window                                 |
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to show the server window  |
 | `/size [SERVER] [WINDOW] WIDTH HEIGHT` | Resizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's size. Pass `*` as `WINDOW` to resize the server window |
 | `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor. Pass `*` as `WINDOW` to select the server window                                  |
+| `target LABEL`                                 | Creates a target for the `goto` command. If used as a target for `goto`, script execution will move to the line this appears on. `LABEL` cannot contain spaces. Can only be called from scripts      |
 | `/time`                                 | Requests server time                                                                                                             |
 | `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
 | `/_trace TARGET`              | Executes a trace on a server or user. May only be issued by server operators |
@@ -374,7 +375,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
-| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `cascade`, `fullscreen`, `hotkey`,  `ignore`, `install`, `layout`, `logs`, `maximize`, `minimize`, `move`, `next`, `ontop`, `pause`, `plugin`, `previous`, `readme`, `resize`, `restart`, `restore`, `settings`, `tile`, and `uninstall`. Call with no arguments to see main window information and a list of subwindows                                                 |
+| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `cascade`, `fade`, `fullscreen`, `hotkey`,  `ignore`, `install`, `layout`, `logs`, `maximize`, `minimize`, `move`, `next`, `ontop`, `pause`, `plugin`, `previous`, `readme`, `resize`, `restart`, `restore`, `settings`, `tile`, and `uninstall`. Call with no arguments to see main window information and a list of subwindows                                                 |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 | `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |

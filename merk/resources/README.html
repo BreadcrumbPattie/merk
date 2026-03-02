@@ -1,4 +1,4 @@
-<h1>MERK 0.051.596</h1>
+<h1>MERK 0.051.600</h1>
 
 <p><a href="https://github.com/nutjob-laboratories/merk">Official source code repository</a></p>
 <h1 id="table-of-contents">Table of contents</h1>
@@ -15,7 +15,7 @@
 <li><a href="#does-merk-need-any-help">Does MERK need any help?</a></li>
 </ul>
 <h1 id="summary">Summary</h1>
-<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.596</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
+<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.600</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
 <p><strong>MERK</strong> is still in development, but it works, and can be used for most IRC activities.</p>
 <p>Join me on the official <strong>MERK</strong> IRC channel, <strong>#merk</strong> on the Libera Chat network! Connect to Libera in the client as one of the built-in server suggestions, or at <strong>irc.libera.chat</strong>, port <strong>6667</strong> (you can also connect via SSL on port <strong>6697</strong>). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!</p>
 <h1 id="making-merk-portable-on-windows">Making MERK Portable on Windows</h1>
@@ -235,8 +235,8 @@ Appearance:
 <td>Opens <code>PATH</code>(s) in the default file manager</td>
 </tr>
 <tr>
-<td><code>goto LINE_NUMBER</code></td>
-<td>Moves execution of the script to <code>LINE_NUMBER</code>. The only script-only command that can be issued from an <code>if</code> command. <strong>Can only be called from scripts</strong></td>
+<td><code>goto TARGET</code></td>
+<td>Moves execution of the script to <code>TARGET</code>. The only script-only command that can be issued from an <code>if</code> command. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>halt [MESSAGE...]</code></td>
@@ -412,7 +412,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/rem [TEXT...]</code></td>
-<td>Does nothing. Can be used as a target for <code>goto</code></td>
+<td>Does nothing. Can be used for comments</td>
 </tr>
 <tr>
 <td><code>restrict SERVER|CHANNEL|PRIVATE</code></td>
@@ -437,6 +437,10 @@ Appearance:
 <tr>
 <td><code>/style [SERVER] [WINDOW]</code></td>
 <td>Opens a window's text style editor. Pass <code>*</code> as <code>WINDOW</code> to select the server window</td>
+</tr>
+<tr>
+<td><code>target LABEL</code></td>
+<td>Creates a target for the <code>goto</code> command. If used as a target for <code>goto</code>, script execution will move to the line this appears on. <code>LABEL</code> cannot contain spaces. Can only be called from scripts</td>
 </tr>
 <tr>
 <td><code>/time</code></td>
@@ -504,7 +508,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/window [COMMAND] [X] [Y]</code></td>
-<td>Manipulates the main application window. Valid commands are <strong><code>cascade</code></strong>, <strong><code>fullscreen</code></strong>, <strong><code>hotkey</code></strong>, <strong><code>ignore</code></strong>, <strong><code>install</code></strong>, <strong><code>layout</code></strong>, <strong><code>logs</code></strong>, <strong><code>maximize</code></strong>, <strong><code>minimize</code></strong>, <strong><code>move</code></strong>, <strong><code>next</code></strong>, <strong><code>ontop</code></strong>, <strong><code>pause</code></strong>, <strong><code>plugin</code></strong>, <strong><code>previous</code></strong>, <strong><code>readme</code></strong>, <strong><code>resize</code></strong>, <strong><code>restart</code></strong>, <strong><code>restore</code></strong>, <strong><code>settings</code></strong>, <strong><code>tile</code></strong>, and <strong><code>uninstall</code></strong>. Call with no arguments to see main window information and a list of subwindows</td>
+<td>Manipulates the main application window. Valid commands are <strong><code>cascade</code></strong>, <strong><code>fade</code></strong>, <strong><code>fullscreen</code></strong>, <strong><code>hotkey</code></strong>, <strong><code>ignore</code></strong>, <strong><code>install</code></strong>, <strong><code>layout</code></strong>, <strong><code>logs</code></strong>, <strong><code>maximize</code></strong>, <strong><code>minimize</code></strong>, <strong><code>move</code></strong>, <strong><code>next</code></strong>, <strong><code>ontop</code></strong>, <strong><code>pause</code></strong>, <strong><code>plugin</code></strong>, <strong><code>previous</code></strong>, <strong><code>readme</code></strong>, <strong><code>resize</code></strong>, <strong><code>restart</code></strong>, <strong><code>restore</code></strong>, <strong><code>settings</code></strong>, <strong><code>tile</code></strong>, and <strong><code>uninstall</code></strong>. Call with no arguments to see main window information and a list of subwindows</td>
 </tr>
 <tr>
 <td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>

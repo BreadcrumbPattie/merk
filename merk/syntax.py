@@ -73,6 +73,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'.connect','.xconnect', '.markdown', '.color', '.strip', '.colored',
 					'.browser', '.folder', '.current', '.uncolor', '.unmarkdown',
 					'.markup','.unmarkup', '.demojize', '.deasciimojize', '.location',
+					'.fade',
 
 					# Plugin events
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
@@ -286,6 +287,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window pause",
 			cmdsymbol+"window layout",
 			cmdsymbol+"fade",
+			cmdsymbol+"window fade",
 		]
 
 		script_only = [
@@ -309,6 +311,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"restrict private channel",
 			"halt",
 			"random",
+			"target",
 		]
 
 		script_full = [

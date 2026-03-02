@@ -177,6 +177,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window ontop": config.ISSUE_COMMAND_SYMBOL+"window ontop",
 			config.ISSUE_COMMAND_SYMBOL+"window pause": config.ISSUE_COMMAND_SYMBOL+"window pause",
 			config.ISSUE_COMMAND_SYMBOL+"window layout": config.ISSUE_COMMAND_SYMBOL+"window layout",
+			config.ISSUE_COMMAND_SYMBOL+"window fade": config.ISSUE_COMMAND_SYMBOL+"window fade ",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -340,7 +341,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		"<b>move</b>","<b>resize</b>","<b>maximize</b>","<b>minimize</b>",
 		"<b>restore</b>","<b>readme</b>","<b>settings</b>","<b>logs</b>",
 		"<b>restart</b>","<b>next</b>","<b>previous</b>","<b>cascade</b>",
-		"<b>tile</b>","<b>fullscreen</b>","<b>ontop</b>"
+		"<b>tile</b>","<b>fullscreen</b>","<b>ontop</b>","<b>fade</b>"
 	]
 
 	if config.ENABLE_HOTKEYS: W_COMMAND.append("<b>hotkey</b>")
@@ -3910,6 +3911,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			viewport_size = mdi_viewport.size()
 			screen = gui.app.primaryScreen()
 			size = screen.size()
+			opacity = round(gui.windowOpacity() * 100)
+
+			if opacity<100:
+				t = Message(SYSTEM_MESSAGE,'',f"Transparency: {opacity}%")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			t = Message(SYSTEM_MESSAGE,'',f"Desktop area: {size.width()}x{size.height()}")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -4477,6 +4483,36 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				gui.openIgnore()
+				return True
+
+		# /window fade NUMBER
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==3:
+			if tokens[1].lower()=='fade':
+				tokens.pop(0)
+				tokens.pop(0)
+				perc = tokens.pop(0)
+				p = is_int(perc)
+				if p==None:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window fade: \"{perc}\" is not a number")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{perc}\" is not a number")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				if p>100 or p<1:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window fade: \"{perc}\" is not a number between 1 and 100")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{perc}\" is not a number between 1 and 100")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				gui.setWindowOpacity(p/100)
 				return True
 
 		# /window next
@@ -7729,8 +7765,17 @@ class ScriptThread(QThread):
 		self.ALIAS = dict(ALIAS)
 		self.TEMPORARY_ALIAS = dict(TEMPORARY_ALIAS)
 		self.CREATED = []
+		self.TARGETS = {}
 
 		self.updateAlias.connect(self.handle_update)
+
+	def target(self,label,line_number=None):
+		if line_number==None:
+			if label.lower()=='end': return 0
+			if label in self.TARGETS: return self.TARGETS[label]
+			return None
+
+		self.TARGETS[label] = line_number
 
 	@pyqtSlot(str, object)
 	def handle_update(self, k, v):
@@ -8051,6 +8096,39 @@ class ScriptThread(QThread):
 		except (SyntaxError, TypeError, ValueError) as e:
 			return [e,True]
 
+	def process_targets(self):
+		script = []
+		got_error = False
+
+		line_number = 0
+		for line in self.script.split("\n"):
+			line_number = line_number + 1
+			line = line.strip()
+			if len(line)==0: continue
+			tokens = line.split()
+
+			# |========|
+			# | target |
+			# |========|
+			if len(tokens)>=1:
+				if len(tokens)==2:
+					if tokens[0].lower()=='target':
+						tokens.pop(0)
+						label = tokens.pop(0)
+						if self.target(label)!=None:
+							self.scriptError.emit([self.gui,self.window,f"Error processing target: Target \"{label}\" already exists"])
+							got_error = True
+						else:
+							self.target(label,line_number)
+						continue
+				if len(tokens)==1 or len(tokens)>2:
+					if tokens[0].lower()=='target':
+						self.scriptError.emit([self.gui,self.window,f"Error processing target: target called with the wrong number of arguments"])
+						got_error = True
+
+		if not config.HALT_SCRIPT_EXECUTION_ON_ERROR: got_error = False
+		return got_error
+
 	def run(self):
 
 		try:
@@ -8099,11 +8177,18 @@ class ScriptThread(QThread):
 							no_errors = False
 							break
 
-			# Second pass, check for errors
+			# Second pass through the script,
+			# handle any targets
+			if no_errors:
+				err = self.process_targets()
+				if err:
+					no_errors = False
+
+			# Third pass, check for errors
 			if no_errors:
 				no_errors = self.check_for_errors(self.script,self.filename)
 
-			# Third pass through the script, here's
+			# Fourth pass through the script, here's
 			# where we actually do stuff
 			if no_errors:
 
@@ -8172,6 +8257,7 @@ class ScriptThread(QThread):
 								else:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: aliases are disabled"])
 									loop = False
+								script_only_command = True
 								continue
 
 						# |========|
@@ -8225,6 +8311,7 @@ class ScriptThread(QThread):
 								else:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: aliases are disabled"])
 									loop = False
+								script_only_command = True
 								continue
 
 						# |======|
@@ -8405,6 +8492,11 @@ class ScriptThread(QThread):
 													loop = False
 													script_only_command = True
 													continue
+												elif target in self.TARGETS:
+													t = self.target(target)
+													index = t-2
+													handled_goto = True
+													continue
 												else:
 													try:
 														ln = int(stokens[1])
@@ -8524,6 +8616,12 @@ class ScriptThread(QThread):
 								script_only_command = True
 								continue
 
+						# Bypass target, already handled
+						if len(tokens)>=1:
+							if tokens[0].lower()=='target':
+								script_only_command = True
+								continue
+
 						# Bypass usage, already handled
 						if len(tokens)>=1:
 							if tokens[0].lower()=='usage':
@@ -8576,6 +8674,11 @@ class ScriptThread(QThread):
 
 									if target.lower()=='end':
 										loop = False
+										script_only_command = True
+										continue
+									elif target in self.TARGETS:
+										t = self.target(target)
+										index = t-2
 										script_only_command = True
 										continue
 									else:

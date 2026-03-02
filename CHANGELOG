@@ -147,6 +147,9 @@ What's New:
   input typed into the text input widget or in scripts. This should fix some
   bugs that might pop up when switching contexts, or using hotkeys.
 * Removed the /s command shortcut for /script.
+* Added a new built-in alias: $_WEB, which contains the URL of the MERK website.
+* Bugfix: calling scripts/macros/etc with arguments that have ' in them will no
+  longer crash the client on occasion.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

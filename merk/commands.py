@@ -738,6 +738,7 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_VERSION',APPLICATION_VERSION)
 	addTemporaryAlias('_USERNAME',window.client.username)
 	addTemporaryAlias('_WINDOW',window.name)
+	addTemporaryAlias('_WEB',APPLICATION_WEB)
 	if window.window_type==SERVER_WINDOW:
 		addTemporaryAlias('_WTYPE',"server")
 	elif window.window_type==CHANNEL_WINDOW:
@@ -747,8 +748,6 @@ def buildTemporaryAliases(gui,window):
 	else:
 		addTemporaryAlias('_WTYPE',"unknown")
 	addTemporaryAlias('_YEAR',year)
-
-	return TEMPORARY_ALIAS
 
 def fullInterpolate(gui,window,user_input):
 	buildTemporaryAliases(gui,window)
@@ -1780,7 +1779,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'folder' and len(tokens)>=2:
 			tokens.pop(0)
-			dirs = shlex.split(' '.join(tokens), comments=False)
+			dirs = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
 			for d in dirs:
 				if os.path.isdir(d):
 					gui.open_folder(d)
@@ -2212,7 +2211,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if len(tokens)==0:
 				args = []
 			else:
-				args = shlex.split(' '.join(tokens), comments=False)
+				args = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
 
 			plugins.command_call(gui,window,method,args)
 			return True
@@ -2387,7 +2386,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 		# /macro name script
 		try:
-			stokens = shlex.split(user_input, comments=False)
+			stokens = shlex.split(shlex.quote(user_input), comments=False)
 		except:
 			stokens = user_input.split()
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==3:
@@ -2453,7 +2452,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 		# /macro name script usage
 		try:
-			stokens = shlex.split(user_input, comments=False)
+			stokens = shlex.split(shlex.quote(user_input), comments=False)
 		except:
 			stokens = user_input.split()
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==4:
@@ -2520,7 +2519,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 		# /macro name script usage help
 		try:
-			stokens = shlex.split(user_input, comments=False)
+			stokens = shlex.split(shlex.quote(user_input), comments=False)
 		except:
 			stokens = user_input.split()
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==5:
@@ -7005,7 +7004,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			tokens.pop(0)
 			filename = tokens.pop(0)
-			tokens = shlex.split(' '.join(tokens), comments=False)
+			tokens = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
 			arguments = list(tokens)
 
 			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
@@ -7040,7 +7039,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				e = x.get_script_information(gui)
 				if e:
 					script = e[0]
-					args = shlex.split(e[1], comments=False)
+					args = shlex.split(shlex.quote(e[1]), comments=False)
 
 					# Check to see if the filename is a filename
 					# in the application's "path"
@@ -7824,7 +7823,7 @@ class ScriptThread(QThread):
 
 						# Use shlex to tokenize the input, so that we can
 						# handle filenames with spaces in them
-						ftokens = shlex.split(' '.join(tokens), comments=False)
+						ftokens = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
 
 						for f in ftokens:
 							f = self.interpolateAliases(f)
@@ -8268,7 +8267,7 @@ class ScriptThread(QThread):
 									continue
 
 								try:
-									stokens = shlex.split(line, comments=False)
+									stokens = shlex.split(shlex.quote(line), comments=False)
 								except:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing if command. Try using quotation marks"])
 									loop = False

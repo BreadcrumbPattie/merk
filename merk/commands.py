@@ -2385,10 +2385,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		# /macro name script
-		try:
-			stokens = shlex.split(shlex.quote(user_input), comments=False)
-		except:
-			stokens = user_input.split()
+		stokens = shlex.split(shlex.quote(user_input), comments=False)
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==3:
 			stokens.pop(0)
 			name = stokens.pop(0)
@@ -2451,10 +2448,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		# /macro name script usage
-		try:
-			stokens = shlex.split(shlex.quote(user_input), comments=False)
-		except:
-			stokens = user_input.split()
+		stokens = shlex.split(shlex.quote(user_input), comments=False)
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==4:
 			stokens.pop(0)
 			name = stokens.pop(0)
@@ -2518,10 +2512,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		# /macro name script usage help
-		try:
-			stokens = shlex.split(shlex.quote(user_input), comments=False)
-		except:
-			stokens = user_input.split()
+		stokens = shlex.split(shlex.quote(user_input), comments=False)
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==5:
 			stokens.pop(0)
 			name = stokens.pop(0)
@@ -8267,7 +8258,7 @@ class ScriptThread(QThread):
 									continue
 
 								try:
-									stokens = shlex.split(shlex.quote(line), comments=False)
+									stokens = shlex.split(line, comments=False)
 								except:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing if command. Try using quotation marks"])
 									loop = False
@@ -8309,71 +8300,95 @@ class ScriptThread(QThread):
 
 								if operator.lower()=='(lt)':
 									valid_operator = True
+									e_is_string = False
+									t_is_string = False
 									try:
 										ei = float(examine)
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{examine}\" is not a number"])
-										loop = False
-										continue
+										ei = examine
+										e_is_string = True
 									try:
 										ti = float(target)
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a number"])
-										loop = False
-										continue
-									if ei<ti:
-										do_command = True
+										ti = target
+										t_is_string = True
+									if e_is_string or t_is_string:
+										if e_is_string: ei = len(ei)
+										if t_is_string: ti = len(ti)
+										if ei<ti:
+											do_command = True
+									else:
+										if ei<ti: 
+											do_command = True
 
 								if operator.lower()=='(gt)':
 									valid_operator = True
+									e_is_string = False
+									t_is_string = False
 									try:
 										ei = float(examine)
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{examine}\" is not a number"])
-										loop = False
-										continue
+										ei = examine
+										e_is_string = True
 									try:
 										ti = float(target)
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a number"])
-										loop = False
-										continue
-									if ei>ti: 
-										do_command = True
+										ti = target
+										t_is_string = True
+									if e_is_string or t_is_string:
+										if e_is_string: ei = len(ei)
+										if t_is_string: ti = len(ti)
+										if ei>ti:
+											do_command = True
+									else:
+										if ei>ti: 
+											do_command = True
 
 								if operator.lower()=='(eq)':
 									valid_operator = True
+									e_is_string = False
+									t_is_string = False
 									try:
 										ei = float(examine)
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{examine}\" is not a number"])
-										loop = False
-										continue
+										ei = examine
+										e_is_string = True
 									try:
 										ti = float(target)
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a number"])
-										loop = False
-										continue
-									if ei==ti: 
-										do_command = True
+										ti = target
+										t_is_string = True
+									if e_is_string or t_is_string:
+										if e_is_string: ei = len(ei)
+										if t_is_string: ti = len(ti)
+										if ei==ti:
+											do_command = True
+									else:
+										if ei==ti: 
+											do_command = True
 
 								if operator.lower()=='(ne)':
 									valid_operator = True
+									e_is_string = False
+									t_is_string = False
 									try:
 										ei = float(examine)
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{examine}\" is not a number"])
-										loop = False
-										continue
+										ei = examine
+										e_is_string = True
 									try:
 										ti = float(target)
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a number"])
-										loop = False
-										continue
-									if ei!=ti: 
-										do_command = True
+										ti = target
+										t_is_string = True
+									if e_is_string or t_is_string:
+										if e_is_string: ei = len(ei)
+										if t_is_string: ti = len(ti)
+										if ei!=ti:
+											do_command = True
+									else:
+										if ei!=ti: 
+											do_command = True
 
 								if not valid_operator:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{operator}\" is not a valid \"if\" operator"])
@@ -8404,8 +8419,7 @@ class ScriptThread(QThread):
 														self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[1]}\" is not a valid line number"])
 														loop = False
 														continue
-													index = ln
-													self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
+													index = ln - 1
 													handled_goto = True
 													continue
 											else:
@@ -8579,8 +8593,7 @@ class ScriptThread(QThread):
 											loop = False
 											continue
 
-										index = target-1
-										self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
+										index = target-2
 										script_only_command = True
 										continue
 								else:

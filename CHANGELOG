@@ -7,6 +7,7 @@ What's New:
   - **Nicknames are highlighted in chat**. The user's nickname is now highlighted in chat when mentioned in a message. This option, on by default, can be turned off in the Settings dialog or with the `/config` command.
   - **Revamped channel list**. The channel list window has been completely reworked. IRC color and formatting codes are stripped from channel topics. It will run *much* faster now.
   - **Major bugfix affecting some server connections**. Some servers, when attempting to connect with a nickname longer than the server's nick limit, rather than emit an error notifying the client of an invalid nickname, simply truncate the nick to an "appropriate" length and attempt to continue registration. If the truncated nickname is already claimed, the client couldn't normally complete registration and chat (I'm looking at *you*, [EFnet](https://www.efnet.org/)/[ircd-ratbox](https://www.ratbox.org/)). This has been fixed, and **MERK** will be able to connect normally to these servers.
+  - **`goto` can now be used to jump to any line in a script**. `goto` is no longer limited to jumping to lines without script-only commands.
   - **Many, many, bugfixes**.
 
 |==============================================================================|
@@ -150,6 +151,13 @@ What's New:
 * Added a new built-in alias: $_WEB, which contains the URL of the MERK website.
 * Bugfix: calling scripts/macros/etc with arguments that have ' in them will no
   longer crash the client on occasion.
+* Bugfix: the previous bugfix broke the "if" script-only command. The bug has
+  been fixed, and "if" is functional again.
+* The "if" script-only command can now take a string as a value for any
+  operator, including (eq), (ne), (lt), and (gt). For these operators, strings
+  are measured for length, with the length being used.
+* Bugfix: "goto" can now be used to jump to a line with a script-only command,
+  and no longer throws an "unrecognized command" error when it does so.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

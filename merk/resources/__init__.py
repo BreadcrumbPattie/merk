@@ -454,6 +454,14 @@ class WhoWasData:
 
 # Functions
 
+def is_text_file(filepath, block_size=1024):
+	try:
+		with open(filepath, 'rb') as f:
+			chunk = f.read(block_size)
+			return b'\x00' not in chunk
+	except Exception:
+		return False
+
 def is_allowed_nickname(s):
 	forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘"
 	pattern = rf"^[^0-9\-{forbidden_chars}][^{forbidden_chars}]*$"

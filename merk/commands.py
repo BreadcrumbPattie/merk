@@ -651,6 +651,7 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_DATE',mydate)
 	addTemporaryAlias('_DAY',day)
 	addTemporaryAlias('_DLOGS',logs.LOG_DIRECTORY)
+	addTemporaryAlias('_DONATE',"https://buymeacoffee.com/danhetrick")
 	addTemporaryAlias('_DPLUGINS',plugins.PLUGIN_DIRECTORY)
 	addTemporaryAlias('_DSCRIPTS',SCRIPTS_DIRECTORY)
 	addTemporaryAlias('_DSETTINGS',config.CONFIG_DIRECTORY)
@@ -3953,6 +3954,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					return True
 
 				results = []
+				screen = gui.app.primaryScreen()
+				size = screen.size()
+				opacity = round(gui.windowOpacity() * 100)
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Layout for {datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')}")
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}window resize {size.width()} {size.height()}")
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}window fade {opacity}")
+
 				for w in gui.getAllAllConnectedSubWindows():
 					if w.isVisible():
 						width = w.width()
@@ -3964,7 +3972,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						results.append(f"{config.ISSUE_COMMAND_SYMBOL}move {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {x_val} {y_val}")
 						results.append(f"{config.ISSUE_COMMAND_SYMBOL}fade {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {opacity}")
 				if len(results)>0:
-					results.insert(0,f"{config.ISSUE_COMMAND_SYMBOL}rem Subwindow layout for {datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')}")
 					gui.newEditorWindowContents("\n".join(results))
 				else:
 					if is_script:
@@ -8121,9 +8128,13 @@ class ScriptThread(QThread):
 						else:
 							self.target(label,line_number)
 						continue
-				if len(tokens)==1 or len(tokens)>2:
+				if len(tokens)>2:
 					if tokens[0].lower()=='target':
-						self.scriptError.emit([self.gui,self.window,f"Error processing target: target called with the wrong number of arguments"])
+						self.scriptError.emit([self.gui,self.window,f"Error processing target: target called with too many arguments"])
+						got_error = True
+				if len(tokens)==1:
+					if tokens[0].lower()=='target':
+						self.scriptError.emit([self.gui,self.window,f"Error processing target: target requires an argument"])
 						got_error = True
 
 		if not config.HALT_SCRIPT_EXECUTION_ON_ERROR: got_error = False
@@ -8260,6 +8271,68 @@ class ScriptThread(QThread):
 								script_only_command = True
 								continue
 
+						# |======|
+						# | read |
+						# |======|
+						# 
+						# This command reads a file, and stores the
+						# contents in an alias
+						#
+						if len(tokens)>=1:
+							if tokens[0].lower()=='read' and len(tokens)>=3:
+
+								if config.ENABLE_ALIASES:
+									tokens.pop(0)
+									a = tokens.pop(0)
+
+									filename = ' '.join(tokens)
+									efilename = find_file(filename,None)
+
+									if efilename!=None:
+										# If the first character is the interpolation
+										# symbol, strip it from the name
+										if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+											il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+											if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+												a = a[il:]
+
+										# Only add the local alias if it follows all the
+										# "rules" of aliases
+										errors = None
+										if len(a)>=1:
+											if a[0].isalpha():
+												if not a in ALIAS:
+													if is_valid_alias_name(a):
+														if is_text_file(efilename):
+															try:
+																f = open(efilename,"r")
+																contents = f.read()
+																f.close()
+																self.addAlias(a,f"{contents}")
+																self.CREATED.append(a)
+															except Exception as e:
+																errors = f"error reading \"{filename}\" ({e})"
+														else:
+															errors = f"\"{filename}\" is not a text file"
+													else:
+														errors = f"\"{a}\" is not a valid alias token"
+												else:
+													errors = f"\"{a}\" already exists in another scope"
+											else:
+												errors = f"\"{a}\" is not a valid alias token"
+									else:
+										errors = f"\"{filename}\" not found"
+									if errors!=None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {errors}"])
+										loop = False
+									else:
+										script_only_command = True
+								else:
+									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: aliases are disabled"])
+									loop = False
+								script_only_command = True
+								continue
+
 						# |========|
 						# | random |
 						# |========|
@@ -8309,7 +8382,7 @@ class ScriptThread(QThread):
 									else:
 										script_only_command = True
 								else:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: aliases are disabled"])
+									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: aliases are disabled"])
 									loop = False
 								script_only_command = True
 								continue
@@ -8492,10 +8565,14 @@ class ScriptThread(QThread):
 													loop = False
 													script_only_command = True
 													continue
-												elif target in self.TARGETS:
-													t = self.target(target)
+												elif stokens[1] in self.TARGETS:
+													t = self.target(stokens[1])
 													index = t-2
 													handled_goto = True
+													continue
+												elif not stokens[1] in self.TARGETS and is_int(stokens[1])==None:
+													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{stokens[1]}\" does not exist"])
+													loop = False
 													continue
 												else:
 													try:
@@ -8679,6 +8756,11 @@ class ScriptThread(QThread):
 									elif target in self.TARGETS:
 										t = self.target(target)
 										index = t-2
+										script_only_command = True
+										continue
+									elif not target in self.TARGETS and is_int(target)==None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{target}\" does not exist"])
+										loop = False
 										script_only_command = True
 										continue
 									else:

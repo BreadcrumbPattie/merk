@@ -116,7 +116,7 @@ There are four libraries that comes bundled with **MERK**:
         - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
         - Scripts have rudimentary flow control, including `if` and `goto`
         - Over 80 different commands are available for scripts or for use in the client
-        - 13 script-only commands
+        - 14 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -314,7 +314,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `if VALUE1 OPERATOR VALUE2 COMMAND...`       | Executes `COMMAND` if `VALUE1` and `VALUE2` are true, depending on `OPERATOR`. Valid `OPERATOR`s are `(is)` (result is true if `VALUE1` and `VALUE2` are equal), `(not)` (result is true if `VALUE1` and `VALUE2` are not equal), `(in)` (result is true if `VALUE1` is contained in `VALUE2`), `(gt)` (result is true if `VALUE1` is a greater number than `VALUE2`; if either value is a string, the length of that string will be used as the value), `(lt)` (result is true if `VALUE1` is a lesser number than `VALUE2`; if either value is a string, the length of that string will be used as the value), `(ne)` (result is true if `VALUE1` is not an equal number to `VALUE2`; if either value is a string, the length of that string will be used as the value), and `(eq)` (result is true if `VALUE1` is an equal number to `VALUE2`; if either value is a string, the length of that string will be used as the value). *Can only be called from scripts*    |
 | `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
 | `/info [TARGET]`                          | Requests server information                         |
-| `insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script; *can only be called by scripts*            |
+| `insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script; *Can only be called by scripts*            |
 | `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                   |
 | `/ison NICKNAME(S)...`              | Displays if the specified nicknames are online          |
 | `/join CHANNEL [KEY]`                   | Joins a channel                                                                                                                  |
@@ -346,7 +346,8 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
 | `/quote TEXT...`                          | Sends unprocessed data to the server. |
-| `random ALIAS START FINISH`              | Generates a random integer from `START` to `FINISH`, and stores it in `ALIAS`. *can only be called by scripts*            |
+| `random ALIAS START FINISH`              | Generates a random integer from `START` to `FINISH`, and stores it in `ALIAS`. *Can only be called by scripts*            |
+| `read ALIAS FILENAME`              | Reads `FILENAME` as a text file, and stores the contents in `ALIAS`. *Can only be called by scripts*            |
 | `/reconnect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server, reconnecting on disconnection                                                   |
 | `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |

@@ -1,4 +1,25 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.650                                  |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Bugfix: targets weren't being properly parsed when used with if...goto.
+* Calling goto with a target that doesn't exist now shows an error message that
+  states that.
+* The /window layout command now includes some settings for the main
+  application window.
+* Bugfix: if aliases are disabled, random occasionally reported the wrong
+  command name in error messages.
+* New script-only command: read. This command reads in a text file and stores
+  its contents in an alias. If a binary file is attempted to be used with this
+  command, an error is shown.
+* New built-in alias: $_DONATE. This contains the URL to donate to MERK's
+  development.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.600                                  |
 |------------------------------------------------------------------------------|
 

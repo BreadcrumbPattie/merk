@@ -152,7 +152,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window minimize": config.ISSUE_COMMAND_SYMBOL+"window minimize",
 			config.ISSUE_COMMAND_SYMBOL+"window restore": config.ISSUE_COMMAND_SYMBOL+"window restore",
 			config.ISSUE_COMMAND_SYMBOL+"window move": config.ISSUE_COMMAND_SYMBOL+"window move ",
-			config.ISSUE_COMMAND_SYMBOL+"window resize": config.ISSUE_COMMAND_SYMBOL+"window resize ",
+			config.ISSUE_COMMAND_SYMBOL+"window size": config.ISSUE_COMMAND_SYMBOL+"window size ",
 			config.ISSUE_COMMAND_SYMBOL+"ctcp time": config.ISSUE_COMMAND_SYMBOL+"ctcp TIME ",
 			config.ISSUE_COMMAND_SYMBOL+"ctcp userinfo": config.ISSUE_COMMAND_SYMBOL+"ctcp USERINFO ",
 			config.ISSUE_COMMAND_SYMBOL+"ctcp version": config.ISSUE_COMMAND_SYMBOL+"ctcp VERSION ",
@@ -338,7 +338,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			AUTOCOMPLETE.update(new_autocomplete)
 
 	W_COMMAND = [
-		"<b>move</b>","<b>resize</b>","<b>maximize</b>","<b>minimize</b>",
+		"<b>move</b>","<b>size</b>","<b>maximize</b>","<b>minimize</b>",
 		"<b>restore</b>","<b>readme</b>","<b>settings</b>","<b>logs</b>",
 		"<b>restart</b>","<b>next</b>","<b>previous</b>","<b>cascade</b>",
 		"<b>tile</b>","<b>fullscreen</b>","<b>ontop</b>","<b>fade</b>"
@@ -3293,7 +3293,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							if is_script:
 								add_halt(script_id)
 								if config.DISPLAY_SCRIPT_ERRORS:
-									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Not a valid window position")
+									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid window position")
 									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 								return True
 							t = Message(ERROR_MESSAGE,'',"Not a valid window position")
@@ -3317,7 +3317,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							if is_script:
 								add_halt(script_id)
 								if config.DISPLAY_SCRIPT_ERRORS:
-									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Not a valid window position")
+									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid window position")
 									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 								return True
 							t = Message(ERROR_MESSAGE,'',"Not a valid window position")
@@ -3379,7 +3379,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Not a valid window position")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid window position")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					t = Message(ERROR_MESSAGE,'',"Not a valid window position")
@@ -3431,7 +3431,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Not a valid window position")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid window position")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					t = Message(ERROR_MESSAGE,'',"Not a valid window position")
@@ -3954,34 +3954,48 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					return True
 
 				results = []
-				screen = gui.app.primaryScreen()
-				size = screen.size()
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem ==============================")
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Main application window layout")
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem ==============================\n")
+
+				if gui.isMaximized():
+					position = gui.pos()
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window restore")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window move {position.x()} {position.y()}")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window maximize")
+				else:
+					size = gui.size()
+					position = gui.pos()
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window restore")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window size {size.width()} {size.height()}")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window move {position.x()} {position.y()}")
+
 				opacity = round(gui.windowOpacity() * 100)
-				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Layout for {datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')}")
-				results.append(f"{config.ISSUE_COMMAND_SYMBOL}window resize {size.width()} {size.height()}")
 				results.append(f"{config.ISSUE_COMMAND_SYMBOL}window fade {opacity}")
 
+				results.append(f"\n{config.ISSUE_COMMAND_SYMBOL}rem ================")
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Subwindow layout")
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem ================\n")
+
 				for w in gui.getAllAllConnectedSubWindows():
-					if w.isVisible():
-						width = w.width()
-						height = w.height()
-						x_val = w.x()
-						y_val = w.y()
-						opacity = w.widget().opacity
-						results.append(f"{config.ISSUE_COMMAND_SYMBOL}size {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {width} {height}")
-						results.append(f"{config.ISSUE_COMMAND_SYMBOL}move {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {x_val} {y_val}")
-						results.append(f"{config.ISSUE_COMMAND_SYMBOL}fade {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {opacity}")
-				if len(results)>0:
-					gui.newEditorWindowContents("\n".join(results))
-				else:
-					if is_script:
-						add_halt(script_id)
-						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: No visible windows found")
-							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-						return True
-					t = Message(ERROR_MESSAGE,'',"No visible windows found")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					width = w.width()
+					height = w.height()
+					x_val = w.x()
+					y_val = w.y()
+					opacity = w.widget().opacity
+					if w.widget().window_type==SERVER_WINDOW:
+						win_name = '*'
+					else:
+						win_name = w.widget().name
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}size {w.widget().client.server}:{w.widget().client.port} {win_name} {width} {height}")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}move {w.widget().client.server}:{w.widget().client.port} {win_name} {x_val} {y_val}")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}fade {w.widget().client.server}:{w.widget().client.port} {win_name} {opacity}")
+					if not w.isVisible():
+						results.append(f"{config.ISSUE_COMMAND_SYMBOL}hide {w.widget().client.server}:{w.widget().client.port} {win_name}")
+					else:
+						results.append(f"{config.ISSUE_COMMAND_SYMBOL}show {w.widget().client.server}:{w.widget().client.port} {win_name}")
+
+				gui.newEditorWindowContents("\n".join(results))
 				return True
 
 		# /window ontop
@@ -4618,7 +4632,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 		# /window size X Y
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==4:
-			if tokens[1].lower()=='resize':
+			if tokens[1].lower()=='size':
 				tokens.pop(0)
 				tokens.pop(0)
 				x_val = tokens.pop(0)
@@ -4629,10 +4643,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window resize: Invalid width")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window size: Invalid width")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
-					t = Message(ERROR_MESSAGE,'',f"Invalid width value passed to {config.ISSUE_COMMAND_SYMBOL}window resize")
+					t = Message(ERROR_MESSAGE,'',f"Invalid width value passed to {config.ISSUE_COMMAND_SYMBOL}window size")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				y_val = is_int(y_val)
@@ -4640,10 +4654,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window resize: Invalid height")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window size: Invalid height")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
-					t = Message(ERROR_MESSAGE,'',f"Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}window resize")
+					t = Message(ERROR_MESSAGE,'',f"Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}window size")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 

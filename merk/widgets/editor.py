@@ -153,7 +153,6 @@ class Window(QMainWindow):
 		self.current_user_script = hostid
 
 		self.editor.setPlainText(contents)
-		self.menuSave.setEnabled(True)
 		self.changed = False
 		self.updateApplicationTitle()
 
@@ -767,9 +766,6 @@ class Window(QMainWindow):
 		self.menuSave.triggered.connect(self.doFileSave)
 		self.menuSave.setShortcut("Ctrl+S")
 		self.fileMenu.addAction(self.menuSave)
-
-		if self.filename==None:
-			self.menuSave.setEnabled(False)
 
 		self.menuSaveAs = QAction(QIcon(SAVEASFILE_ICON),"Save as...",self)
 		self.menuSaveAs.triggered.connect(self.doFileSaveAs)
@@ -1535,7 +1531,6 @@ class Window(QMainWindow):
 		self.filename = None
 		self.editor.clear()
 		self.editor.insertPlainText(EXAMPLE_PLUGIN)
-		self.menuSave.setEnabled(True)
 		self.changed = True
 		self.menuSave.setShortcut("Ctrl+S")
 		self.menuSaveAs.setShortcut(QKeySequence())
@@ -1551,7 +1546,6 @@ class Window(QMainWindow):
 		self.filename = None
 		self.editor.clear()
 		self.editor.insertPlainText(strip_comments_and_docstrings_ast(EXAMPLE_PLUGIN))
-		self.menuSave.setEnabled(True)
 		self.changed = True
 		self.menuSave.setShortcut("Ctrl+S")
 		self.menuSaveAs.setShortcut(QKeySequence())
@@ -1584,7 +1578,6 @@ class Window(QMainWindow):
 
 		self.filename = None
 		self.editor.clear()
-		self.menuSave.setEnabled(True)
 		self.changed = False
 		self.menuSave.setShortcut("Ctrl+S")
 		self.menuSaveAs.setShortcut(QKeySequence())
@@ -1601,7 +1594,6 @@ class Window(QMainWindow):
 
 		self.filename = None
 		self.editor.clear()
-		self.menuSave.setEnabled(True)
 		self.changed = False
 		self.menuSave.setShortcut(QKeySequence())
 		self.menuSaveAs.setShortcut("Ctrl+S")
@@ -2143,7 +2135,6 @@ class Window(QMainWindow):
 			code.write(self.editor.toPlainText())
 			code.close()
 			self.changed = False
-			self.menuSave.setEnabled(True)
 			self.updateApplicationTitle()
 			self.menuSave.setShortcut("Ctrl+S")
 			self.menuSaveAs.setShortcut(QKeySequence())
@@ -2154,7 +2145,6 @@ class Window(QMainWindow):
 
 		self.filename = None
 		self.editor.clear()
-		self.menuSave.setEnabled(False)
 		self.changed = False
 		self.menuSave.setShortcut(QKeySequence())
 		self.menuSaveAs.setShortcut("Ctrl+S")
@@ -2183,7 +2173,6 @@ class Window(QMainWindow):
 			script.close()
 			self.filename = fileName
 			self.changed = False
-			self.menuSave.setEnabled(True)
 			self.menuSave.setShortcut("Ctrl+S")
 			self.menuSaveAs.setShortcut(QKeySequence())
 			self.editing_user_script = False

@@ -231,7 +231,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"xreconnectssl",
 			cmdsymbol+"user",
 			cmdsymbol+"window move",
-			cmdsymbol+"window resize",
+			cmdsymbol+"window size",
 			cmdsymbol+"window maximize",
 			cmdsymbol+"window minimize",
 			cmdsymbol+"window restore",

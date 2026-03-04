@@ -9,8 +9,9 @@
 * Bugfix: targets weren't being properly parsed when used with if...goto.
 * Calling goto with a target that doesn't exist now shows an error message that
   states that.
-* The /window layout command now includes some settings for the main
-  application window.
+* The /window layout command now includes settings for the main application 
+  window. Hidden subwindows are now included, and explicitly hidden in the
+  generated script.
 * Bugfix: if aliases are disabled, random occasionally reported the wrong
   command name in error messages.
 * New script-only command: read. This command reads in a text file and stores
@@ -25,6 +26,13 @@
   command by changing the settings_dialog_font_size setting.
 * Bugfix: changing application fonts did not always set all fonts on subwindows
   properly. This has been fixed.
+* The "Save" menu option in the editors is now always enabled; if there is not
+  a filename to save to, the "save as" dialog will be used.
+* Bugfix: the "is this valid place to move a subwindow" function would
+  occasionally say a location was invalid on large desktops or multiple screens.
+  This has been fixed.
+* Changed the name of the /window subcommand "resize" to "size", to more
+  closely match the /size command.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.600                                  |

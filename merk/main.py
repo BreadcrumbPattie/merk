@@ -5865,28 +5865,29 @@ class Merk(QMainWindow):
 			if e[0]==client and e[1]==target:
 				return True
 		return False
-
-	def is_move_valid_on_screen(self,window,x, y):
-		app = QApplication.instance()
 	
-		# Create a QRect for the proposed new position
-		window_rect = window.geometry()
-		new_rect = QRect(x, y, window_rect.width(), window_rect.height())
-		
-		# Iterate over all available screens and check for intersection
+	def is_move_valid_on_screen(self, window, x, y):
+		app = QApplication.instance()
+		window_size = window.size()
+		proposed_rect = QRect(x, y, window_size.width(), window_size.height())
+		global_top_left = window.mapToGlobal(proposed_rect.topLeft())
+		proposed_global_rect = QRect(global_top_left, window_size)
 		for screen in app.screens():
-			if screen.geometry().intersects(new_rect):
+			if screen.geometry().intersects(proposed_global_rect):
 				return True
-			
+		return False
 
 	def is_valid_position(self, sub_window, new_x, new_y):
-		mdi_viewport = self.MDI.viewport()
-		viewport_rect = mdi_viewport.rect()
 		sub_window_size = sub_window.size()
-		proposed_rect = QRect(new_x, new_y, sub_window_size.width(), sub_window_size.height())
-
-		# A position is "valid" if the subwindow is at least partially visible.
-		return viewport_rect.intersects(proposed_rect)
+		top_left_local = QPoint(new_x, new_y)
+		bottom_right_local = QPoint(new_x + sub_window_size.width(), new_y + sub_window_size.height())
+		top_left_global = self.MDI.mapToGlobal(top_left_local)
+		bottom_right_global = self.MDI.mapToGlobal(bottom_right_local)
+		proposed_global_rect = QRect(top_left_global, bottom_right_global)
+		for screen in QApplication.screens():
+			if screen.geometry().intersects(proposed_global_rect):
+				return True
+		return False
 
 	# merk_subWindowActivated()
 	# Triggered whenever a subwindow is activated

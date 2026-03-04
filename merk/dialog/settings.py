@@ -1891,13 +1891,16 @@ class Dialog(QDialog):
 		self.app = app
 		self.parent = parent
 
-		self.setFont(self.parent.application_font)
-
 		# Load in user settings
 		user.load_user(user.USER_FILE)
 
 		# Load in config settings
 		config.load_settings(config.CONFIG_FILE)
+
+		# Force the font to a strict size
+		f = self.font()
+		f.setPointSize(config.SETTINGS_FONT_POINT_SIZE)
+		self.setFont(f)
 
 		self.newfont = None
 		self.default_font = False
@@ -3752,6 +3755,7 @@ class Dialog(QDialog):
 		chanButtonLayout2.addRow(self.channelName,self.channelCount)
 		chanButtonLayout2.addRow(self.channelTooltip,self.topicEditor)
 		chanButtonLayout2.addRow(self.chanMode)
+		chanButtonLayout2.addRow(self.channelColors)
 
 		chanButtonLayout = QHBoxLayout()
 		chanButtonLayout.addStretch()

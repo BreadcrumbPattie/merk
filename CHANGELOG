@@ -18,6 +18,13 @@
   command, an error is shown.
 * New built-in alias: $_DONATE. This contains the URL to donate to MERK's
   development.
+* Bugfix: one of the checkboxes in the Settings dialog was not put into the
+  layout correctly. This has been fixed.
+* The font size of the Settings dialog is now fixed at 10pt, by default. The
+  fixed size can be changed in the configuration file or with the /config
+  command by changing the settings_dialog_font_size setting.
+* Bugfix: changing application fonts did not always set all fonts on subwindows
+  properly. This has been fixed.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.600                                  |

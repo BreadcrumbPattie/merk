@@ -2921,21 +2921,19 @@ class Merk(QMainWindow):
 			self.MDI.setActiveSubWindow(w)
 
 	def setAllFont(self,newfont):
+
+		self.setFont(newfont)
+		for widget in self.findChildren(QWidget):
+			widget.setFont(newfont)
+
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
 			c = window.widget()
+
 			c.setFont(newfont)
-			if hasattr(c,"chat"): c.chat.setFont(newfont)
-			if hasattr(c,"userlist"): c.userlist.setFont(newfont)
-			if hasattr(c,"input"): c.input.setFont(newfont)
-			if hasattr(c,"topic"): c.topic.setFont(newfont)
-			if hasattr(c,"channelUptime"): c.channelUptime.setFont(newfont)
-			if hasattr(c,"nick_display"): c.nick_display.setFont(newfont)
-			if hasattr(c,"mode_display"): c.mode_display.setFont(newfont)
-			if hasattr(c,"spellcheckMenu"): c.spellcheckMenu.setFont(newfont)
-			if hasattr(c,"status"): c.status.setFont(newfont)
-			if hasattr(c,"status_server"): c.status_server.setFont(newfont)
-			if hasattr(c,"key_value"): c.key_value.setFont(newfont)
+			for widget in c.findChildren(QWidget):
+				widget.setFont(newfont)
+
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 

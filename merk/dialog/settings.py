@@ -1898,7 +1898,7 @@ class Dialog(QDialog):
 		config.load_settings(config.CONFIG_FILE)
 
 		# Force the font to a strict size
-		f = self.font()
+		f = self.parent.app.font()
 		f.setPointSize(config.SETTINGS_FONT_POINT_SIZE)
 		self.setFont(f)
 

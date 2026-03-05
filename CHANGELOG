@@ -34,6 +34,16 @@
 * Changed the name of the /window subcommand "resize" to "size", to more
   closely match the /size command.
 
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* Changed the name of the Plugin inherited method resize() to size().
+* Changed the Window class method size() to work exactly like the Plugin
+  inherited method, and removed the Window class method resize().
+* Changed the Console class method size() to work exactly like the Plugin
+  inherited method, and removed the Console class method resize().
+
 |------------------------------------------------------------------------------|
 |                                   0.051.600                                  |
 |------------------------------------------------------------------------------|

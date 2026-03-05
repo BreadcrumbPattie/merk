@@ -69,7 +69,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'.master', '.privates', '.all_privates', '.channels', '.all_channels',
 					'.private','.channel','.restore','.maximized','.max','.minimized',
 					'.min', '.alias', '.bind', '.unbind', '.macro', '.move', '.emojize',
-					'.resize', '.id', '.console', '.unmacro', '.asciimojize',
+					'.size', '.id', '.console', '.unmacro', '.asciimojize',
 					'.connect','.xconnect', '.markdown', '.color', '.strip', '.colored',
 					'.browser', '.folder', '.current', '.uncolor', '.unmarkdown',
 					'.markup','.unmarkup', '.demojize', '.deasciimojize', '.location',

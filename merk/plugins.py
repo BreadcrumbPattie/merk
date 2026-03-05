@@ -68,14 +68,6 @@ class Window():
 		else:
 			return []
 
-	def size(self):
-		w = self._gui.getSubWindow(self._window.name,self._window.client)
-		if w:
-			width = w.width()
-			height = w.height()
-			return [width,height]
-		return [0,0]
-
 	def fade(self,perc=None):
 		if perc==None: return self._window.opacity
 		w = self._gui.getSubWindow(self._window.name,self._window.client)
@@ -170,9 +162,13 @@ class Window():
 		
 		commands.executeScript(self._gui,self._window,script,f,arguments)
 
-	def resize(self,width,height):
+	def size(self,width=None,height=None):
 		w = self._gui.getSubWindow(self._window.name,self._window.client)
 		if w:
+			if width==None or height==None:
+				width = w.width()
+				height = w.height()
+				return [width,height]
 			w.resize(width,height)
 
 	def clear(self):
@@ -482,14 +478,11 @@ class Console():
 			return True
 		return False
 
-	def resize(self,x_val,y_val):
+	def size(self,x_val=None,y_val=None):
+		if x_val==None or y_val==None:
+			return [self._subwindow.width(),self._subwindow.height()]
 		if self._subwindow.isMaximized() or self._subwindow.isMinimized(): self._subwindow.showNormal()
 		self._subwindow.resize(x_val,y_val)
-
-	def size(self):
-		width = self._subwindow.width()
-		height = self._subwindow.height()
-		return [width,height]
 
 	def position(self):
 		p = self._subwindow.pos()
@@ -570,7 +563,7 @@ class Plugin():
 	def id(self):
 		return self._id
 
-	def resize(self,x_val=None,y_val=None):
+	def size(self,x_val=None,y_val=None):
 		if self._gui!=None:
 			if x_val!=None or y_val!=None:
 				if self._gui.isMaximized() or self._gui.isMinimized(): self._gui.showNormal()
@@ -886,7 +879,7 @@ BUILT_IN = [
 	'console', 'emojize', 'find', 'home', 'id', 'ignore',
 	'ignores', 'is_away', 'is_ignored', 'list', 'macro',
 	'server_window', 'max', 'maximized', 'min', 'minimized', 'modes',
-	'move', 'private', 'privates', 'resize', 'restore', 'script',
+	'move', 'private', 'privates', 'size', 'restore', 'script',
 	'unbind', 'unignore', 'windows', 'unmacro', 'asciimojize',
 	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
 	'browser', 'folder', 'current', 'uncolor', 'unmarkdown',

@@ -410,6 +410,10 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		rules += [(r'%s' % o, 0, STYLES['operator'])
 			for o in operators]
 
+		# Script comments
+		pattern = r'^\s*%srem(.*)' % cmdsymbol
+		rules += [(pattern, 1, STYLES['comments'])]
+
 		# Channel names, aliases, and servers
 		rules += [
 			(r'(#+[^#\s]+)', 0, STYLES['channel']),

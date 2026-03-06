@@ -33,6 +33,20 @@
   This has been fixed.
 * Changed the name of the /window subcommand "resize" to "size", to more
   closely match the /size command.
+* Scripts that call /alias when /alias is disabled will now display an error
+  and not execute at all.
+* Bugfix: random, read, and goto now display an error if they are called with
+  the wrong number of arguments.
+* Scripts that contain "if", "insert", and "goto" will no longer run at all if
+  these commands are disabled.
+* Bugfix: several script-only commands did not necessarily interpolate their
+  inputs agains the alias table. These commands have been "fixed": random,
+  write, and halt.
+* Bugfix: /print (and /prints) would occasionally repeat the second word in a
+  message. This has been fixed.
+* Script comments are now highlighted in the editor.
+* Changed the build system. MERK now uses a "universal" major and minor version
+  for building, rather than seperate versions for each platform.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

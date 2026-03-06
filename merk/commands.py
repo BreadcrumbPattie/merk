@@ -3771,7 +3771,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				else:
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
-				msg = f"{server} {target} {msg}"
+				msg = f"{server} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
@@ -6475,7 +6475,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				else:
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
-				msg = f"{server} {target} {msg}"
+				msg = f"{server} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
@@ -7920,6 +7920,69 @@ class ScriptThread(QThread):
 			if len(line)==0: continue
 			tokens = line.split()
 
+			# |======|
+			# | goto |
+			# |======|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='goto':
+					if not config.ENABLE_GOTO_COMMAND:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
+						no_errors = False
+
+			# |========|
+			# | insert |
+			# |========|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='insert':
+					if not config.ENABLE_INSERT_COMMAND:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: insert has been disabled"])
+						no_errors = False
+
+			# |====|
+			# | if |
+			# |====|
+			threw_if_error = False
+			if len(tokens)<5:
+				if tokens[0].lower()=='if':
+					if config.ENABLE_IF_COMMAND:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if called without enough arguments"])
+						no_errors = False
+			if len(tokens)>=5:
+				if tokens[0].lower()=='if':
+					if not config.ENABLE_IF_COMMAND:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if has been disabled"])
+						no_errors = False
+						threw_if_error = True
+					else:
+						try:
+							stokens = shlex.split(line, comments=False)
+							stokens.pop(0)
+							stokens.pop(0)
+							stokens.pop(0)
+							stokens.pop(0)
+							if len(stokens)>1:
+								if stokens[0].lower()=='goto':
+									if not config.ENABLE_GOTO_COMMAND:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
+										no_errors = False
+						except:
+							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing if command. Try using quotation marks"])
+							no_errors = False
+			if len(tokens)>=1 and not threw_if_error:
+				if tokens[0].lower()=='if':
+					if not config.ENABLE_IF_COMMAND:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if has been disabled"])
+						no_errors = False
+
+			# |=======|
+			# | alias |
+			# |=======|
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
+					if not config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias has been disabled"])
+						no_errors = False
+
 			# |=========|
 			# | exclude |
 			# |=========|
@@ -7938,7 +8001,7 @@ class ScriptThread(QThread):
 							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script cannot be ran in {self.window.name}"])
 						no_errors = False
 
-				elif tokens[0].lower()=='exclude' and len(tokens)==1:
+				if tokens[0].lower()=='exclude' and len(tokens)==1:
 					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: exclude called without an argument"])
 					no_errors = False
 
@@ -8285,6 +8348,12 @@ class ScriptThread(QThread):
 								script_only_command = True
 								continue
 
+							if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)<3:
+								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias called without enough arguments"])
+								loop = False
+								script_only_command = True
+								continue
+
 						# |======|
 						# | read |
 						# |======|
@@ -8300,6 +8369,10 @@ class ScriptThread(QThread):
 									a = tokens.pop(0)
 
 									filename = ' '.join(tokens)
+
+									buildTemporaryAliases(self.gui,self.window)
+									filename = self.interpolateAliases(filename)
+
 									efilename = find_file(filename,None)
 
 									if efilename!=None:
@@ -8347,6 +8420,12 @@ class ScriptThread(QThread):
 								script_only_command = True
 								continue
 
+							if tokens[0].lower()=='read':
+								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read called without enough arguments"])
+								loop = False
+								script_only_command = True
+								continue
+
 						# |========|
 						# | random |
 						# |========|
@@ -8361,8 +8440,12 @@ class ScriptThread(QThread):
 									tokens.pop(0)
 									a = tokens.pop(0)
 
-									first = is_int(tokens.pop(0))
-									last = is_int(tokens.pop(0))
+									buildTemporaryAliases(self.gui,self.window)
+									first = self.interpolateAliases(tokens.pop(0))
+									last = self.interpolateAliases(tokens.pop(0))
+
+									first = is_int(first)
+									last = is_int(last)
 
 									if first!=None and last!=None:
 										# If the first character is the interpolation
@@ -8401,6 +8484,17 @@ class ScriptThread(QThread):
 								script_only_command = True
 								continue
 
+							if tokens[0].lower()=='random' and len(tokens)<4:
+								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called without enough arguments"])
+								loop = False
+								script_only_command = True
+								continue
+							if tokens[0].lower()=='random' and len(tokens)>4:
+								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called with too many arguments"])
+								loop = False
+								script_only_command = True
+								continue
+
 						# |======|
 						# | halt |
 						# |======|
@@ -8408,6 +8502,8 @@ class ScriptThread(QThread):
 							if tokens[0].lower()=='halt':
 								tokens.pop(0)
 								msg = ' '.join(tokens)
+								buildTemporaryAliases(self.gui,self.window)
+								msg = self.interpolateAliases(msg)
 								self.scriptError.emit([self.gui,self.window,f"Halt on line {line_number} in {os.path.basename(filename)}: {msg}"])
 								loop = False
 								halt_issued = True
@@ -8425,11 +8521,6 @@ class ScriptThread(QThread):
 						# |====|
 						if len(tokens)>=5:
 							if tokens[0].lower()=='if':
-
-								if not config.ENABLE_IF_COMMAND:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if has been disabled"])
-									loop = False
-									continue
 
 								try:
 									stokens = shlex.split(line, comments=False)
@@ -8584,6 +8675,10 @@ class ScriptThread(QThread):
 													index = t-2
 													handled_goto = True
 													continue
+												elif ' ' in stokens[1]:
+													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{stokens[1]}\" is not a valid target name"])
+													loop = False
+													continue
 												elif not stokens[1] in self.TARGETS and is_int(stokens[1])==None:
 													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{stokens[1]}\" does not exist"])
 													loop = False
@@ -8610,6 +8705,18 @@ class ScriptThread(QThread):
 												loop = False
 												handled_goto = True
 												continue
+									if len(stokens)==1:
+										if stokens[0].lower()=='goto':
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called without a target or line number"])
+											loop = False
+											handled_goto = True
+											continue
+									if len(stokens)>2:
+										if stokens[0].lower()=='goto':
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called with too many arguments"])
+											loop = False
+											handled_goto = True
+											continue
 									if not handled_goto:
 										self.execLine.emit([self.gui,self.window,self.id,' '.join(stokens),line_number,False])
 									script_only_command = True
@@ -8749,57 +8856,61 @@ class ScriptThread(QThread):
 								if config.ENABLE_INSERT_COMMAND:
 									script_only_command = True
 									continue
-								else:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: insert has been disabled"])
-									script_only_command = True
-									loop = False
-									continue
 
 						if len(tokens)==2:
 							if tokens[0].lower()=='goto':
-								if config.ENABLE_GOTO_COMMAND:
-									target = tokens[1]
+								target = tokens[1]
 
-									buildTemporaryAliases(self.gui,self.window)
-									target = self.interpolateAliases(target)
+								buildTemporaryAliases(self.gui,self.window)
+								target = self.interpolateAliases(target)
 
-									if target.lower()=='end':
-										loop = False
-										script_only_command = True
-										continue
-									elif target in self.TARGETS:
-										t = self.target(target)
-										index = t-2
-										script_only_command = True
-										continue
-									elif not target in self.TARGETS and is_int(target)==None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{target}\" does not exist"])
-										loop = False
-										script_only_command = True
-										continue
-									else:
-										try:
-											target = int(target)
-										except:
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
-											loop = False
-											script_only_command = True
-											continue
-										try:
-											code = script[target-1]
-										except:
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
-											loop = False
-											continue
-
-										index = target-2
-										script_only_command = True
-										continue
-								else:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
-									script_only_command = True
+								if target.lower()=='end':
 									loop = False
+									script_only_command = True
 									continue
+								elif target in self.TARGETS:
+									t = self.target(target)
+									index = t-2
+									script_only_command = True
+									continue
+								elif not target in self.TARGETS and is_int(target)==None:
+									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{target}\" does not exist"])
+									loop = False
+									script_only_command = True
+									continue
+								else:
+									try:
+										target = int(target)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
+										loop = False
+										script_only_command = True
+										continue
+									try:
+										code = script[target-1]
+									except:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
+										loop = False
+										continue
+
+									index = target-2
+									script_only_command = True
+									continue
+
+						if len(tokens)==1:
+							if tokens[0].lower()=='goto':
+								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called without an argument"])
+								script_only_command = True
+								loop = False
+								continue
+
+						if len(tokens)>2:
+							if tokens[0].lower()=='goto':
+								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called with too many arguments"])
+								script_only_command = True
+								loop = False
+								continue
+
 						if not config.HALT_SCRIPT_EXECUTION_ON_ERROR:
 							if not halt_issued: loop = True
 						try:

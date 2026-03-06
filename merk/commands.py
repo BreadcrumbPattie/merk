@@ -7920,6 +7920,38 @@ class ScriptThread(QThread):
 			if len(line)==0: continue
 			tokens = line.split()
 
+			config.ENABLE_READ_COMMAND
+
+			# |========|
+			# | random |
+			# |========|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='random':
+					if not config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: aliases are disabled"])
+						no_errors = False
+					elif config.ENABLE_ALIASES and len(tokens)<4:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called without enough arguments"])
+						no_errors = False
+					elif config.ENABLE_ALIASES and len(tokens)>4:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called with too many arguments"])
+						no_errors = False
+
+			# |======|
+			# | read |
+			# |======|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='read':
+					if not config.ENABLE_READ_COMMAND:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read has been disabled"])
+						no_errors = False
+					elif not config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: aliases are disabled"])
+						no_errors = False
+					elif config.ENABLE_READ_COMMAND and len(tokens)<3:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read called without enough arguments"])
+						no_errors = False
+
 			# |======|
 			# | goto |
 			# |======|
@@ -7927,6 +7959,9 @@ class ScriptThread(QThread):
 				if tokens[0].lower()=='goto':
 					if not config.ENABLE_GOTO_COMMAND:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
+						no_errors = False
+					elif config.ENABLE_GOTO_COMMAND and len(tokens)!=2:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called with too many arguments"])
 						no_errors = False
 
 			# |========|
@@ -7936,6 +7971,9 @@ class ScriptThread(QThread):
 				if tokens[0].lower()=='insert':
 					if not config.ENABLE_INSERT_COMMAND:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: insert has been disabled"])
+						no_errors = False
+					elif config.ENABLE_INSERT_COMMAND and len(tokens)==1:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: insert called without enough arguments"])
 						no_errors = False
 
 			# |====|
@@ -7981,6 +8019,9 @@ class ScriptThread(QThread):
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
 					if not config.ENABLE_ALIASES:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias has been disabled"])
+						no_errors = False
+					elif config.ENABLE_ALIASES and len(tokens)<3:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias called without enough arguments"])
 						no_errors = False
 
 			# |=========|
@@ -8333,6 +8374,7 @@ class ScriptThread(QThread):
 													if not error and result!=None: value = str(result)
 													self.addAlias(a,value)
 													self.CREATED.append(a)
+													script_only_command = True
 												else:
 													errors = f"\"{a}\" is not a valid alias token"
 											else:
@@ -8342,16 +8384,6 @@ class ScriptThread(QThread):
 									if errors!=None:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {errors}"])
 										loop = False
-								else:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: aliases are disabled"])
-									loop = False
-								script_only_command = True
-								continue
-
-							if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)<3:
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias called without enough arguments"])
-								loop = False
-								script_only_command = True
 								continue
 
 						# |======|
@@ -8364,7 +8396,7 @@ class ScriptThread(QThread):
 						if len(tokens)>=1:
 							if tokens[0].lower()=='read' and len(tokens)>=3:
 
-								if config.ENABLE_ALIASES:
+								if config.ENABLE_ALIASES and config.ENABLE_READ_COMMAND:
 									tokens.pop(0)
 									a = tokens.pop(0)
 
@@ -8397,6 +8429,7 @@ class ScriptThread(QThread):
 																f.close()
 																self.addAlias(a,f"{contents}")
 																self.CREATED.append(a)
+																script_only_command = True
 															except Exception as e:
 																errors = f"error reading \"{filename}\" ({e})"
 														else:
@@ -8412,18 +8445,6 @@ class ScriptThread(QThread):
 									if errors!=None:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {errors}"])
 										loop = False
-									else:
-										script_only_command = True
-								else:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: aliases are disabled"])
-									loop = False
-								script_only_command = True
-								continue
-
-							if tokens[0].lower()=='read':
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read called without enough arguments"])
-								loop = False
-								script_only_command = True
 								continue
 
 						# |========|
@@ -8465,6 +8486,7 @@ class ScriptThread(QThread):
 														r = random.randint(first, last)
 														self.addAlias(a,f"{r}")
 														self.CREATED.append(a)
+														script_only_command = True
 													else:
 														errors = f"\"{a}\" is not a valid alias token"
 												else:
@@ -8476,23 +8498,6 @@ class ScriptThread(QThread):
 									if errors!=None:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: {errors}"])
 										loop = False
-									else:
-										script_only_command = True
-								else:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: aliases are disabled"])
-									loop = False
-								script_only_command = True
-								continue
-
-							if tokens[0].lower()=='random' and len(tokens)<4:
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called without enough arguments"])
-								loop = False
-								script_only_command = True
-								continue
-							if tokens[0].lower()=='random' and len(tokens)>4:
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called with too many arguments"])
-								loop = False
-								script_only_command = True
 								continue
 
 						# |======|
@@ -8791,7 +8796,6 @@ class ScriptThread(QThread):
 						if len(tokens)==2:
 							if tokens[0].lower()=='wait':
 								count = tokens[1]
-
 								buildTemporaryAliases(self.gui,self.window)
 								count = self.interpolateAliases(count)
 								try:
@@ -8857,6 +8861,9 @@ class ScriptThread(QThread):
 									script_only_command = True
 									continue
 
+						# |======|
+						# | goto |
+						# |======|
 						if len(tokens)==2:
 							if tokens[0].lower()=='goto':
 								target = tokens[1]

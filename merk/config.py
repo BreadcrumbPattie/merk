@@ -416,9 +416,11 @@ REGISTRATION_NICK_ERROR_LIMIT = 3
 PREVENT_ILLEGAL_CHANNELS = True
 CHANNEL_MODE_CONTEXT_MENU = True
 SETTINGS_FONT_POINT_SIZE = 10
+ENABLE_READ_COMMAND = True
 
 def build_settings():
 	settings = {
+		"enable_read_command": ENABLE_READ_COMMAND,
 		"settings_dialog_font_size": SETTINGS_FONT_POINT_SIZE,
 		"channel_mode_right_click_menu": CHANNEL_MODE_CONTEXT_MENU,
 		"prevent_illegal_channel_input": PREVENT_ILLEGAL_CHANNELS,
@@ -800,6 +802,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_read_command" in settings:
+		settings["enable_read_command"] = ENABLE_READ_COMMAND
 	if not "settings_dialog_font_size" in settings:
 		settings["settings_dialog_font_size"] = SETTINGS_FONT_POINT_SIZE
 	if not "channel_mode_right_click_menu" in settings:
@@ -1932,6 +1936,7 @@ def load_settings(filename):
 	global PREVENT_ILLEGAL_CHANNELS
 	global CHANNEL_MODE_CONTEXT_MENU
 	global SETTINGS_FONT_POINT_SIZE
+	global ENABLE_READ_COMMAND
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1941,6 +1946,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_READ_COMMAND = settings["enable_read_command"]
 		SETTINGS_FONT_POINT_SIZE = settings["settings_dialog_font_size"]
 		CHANNEL_MODE_CONTEXT_MENU = settings["channel_mode_right_click_menu"]
 		PREVENT_ILLEGAL_CHANNELS = settings["prevent_illegal_channel_input"]

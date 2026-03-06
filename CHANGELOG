@@ -47,6 +47,12 @@
 * Script comments are now highlighted in the editor.
 * Changed the build system. MERK now uses a "universal" major and minor version
   for building, rather than seperate versions for each platform.
+* Scripts with a goto call with too many arguments (more than one) will no
+  longer execute.
+* Added an option to en/disable the "read" script-only command.
+* Scripts that call "random" or "read" improperly will now no longer execute.
+  Also, if aliases are disabled, scripts that contain these commands will no
+  longer execute.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

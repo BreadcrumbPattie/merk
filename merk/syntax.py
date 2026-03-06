@@ -359,6 +359,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		if not config.ENABLE_ALIASES:
 			merk.remove(cmdsymbol+"alias")
 			merk.remove(cmdsymbol+"unalias")
+			script_only.remove("read")
+			script_only.remove('random')
 		if not SSL_AVAILABLE:
 			merk.remove(cmdsymbol+"connectssl")
 			merk.remove(cmdsymbol+"xconnectssl")
@@ -378,6 +380,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			script_only.remove("insert")
 		if not config.ENABLE_USER_COMMAND:
 			merk.remove(cmdsymbol+"user")
+		if not config.ENABLE_READ_COMMAND:
+			if 'read' in script_only:
+				script_only.remove('read')
 
 		STYLES = {
 			'comments': format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE),

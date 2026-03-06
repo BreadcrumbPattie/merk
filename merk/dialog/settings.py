@@ -852,6 +852,10 @@ class Dialog(QDialog):
 			self.autoAliasAway.setEnabled(True)
 			self.autoAliasQuit.setEnabled(True)
 			self.enableBuiltin.setEnabled(True)
+			if self.enableScripts.isChecked():
+				self.enableRead.setEnabled(True)
+			else:
+				self.enableRead.setEnabled(False)
 		else:
 			self.autocompleteAlias.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
@@ -861,6 +865,7 @@ class Dialog(QDialog):
 			self.autoAliasAway.setEnabled(False)
 			self.autoAliasQuit.setEnabled(False)
 			self.enableBuiltin.setEnabled(False)
+			self.enableRead.setEnabled(False)
 		self.changed.show()
 		self.syntax_did_change = True
 		self.boldApply()
@@ -879,6 +884,10 @@ class Dialog(QDialog):
 			self.syntaxop.setEnabled(True)
 			self.syntaxscript.setEnabled(True)
 			self.enableWait.setEnabled(True)
+			if self.enableAlias.isChecked():
+				self.enableRead.setEnabled(True)
+			else:
+				self.enableRead.setEnabled(False)
 		else:
 			self.showErrors.setEnabled(False)
 			self.restrictError.setEnabled(False)
@@ -891,6 +900,7 @@ class Dialog(QDialog):
 			self.syntaxop.setEnabled(False)
 			self.syntaxscript.setEnabled(False)
 			self.enableWait.setEnabled(False)
+			self.enableRead.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -5075,11 +5085,16 @@ class Dialog(QDialog):
 		if config.ENABLE_BROWSER_COMMAND: self.enableBrowser.setChecked(True)
 		self.enableBrowser.stateChanged.connect(self.changedSettingEditorConfig)
 
+		self.enableRead = QCheckBox(f"read",self)
+		if config.ENABLE_READ_COMMAND: self.enableRead.setChecked(True)
+		self.enableRead.stateChanged.connect(self.changedSettingEditor)
+
 		if not config.ENABLE_ALIASES:
 			self.interpolateAlias.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
 			self.alias_symbol_label.setEnabled(False)
 			self.enableBuiltin.setEnabled(False)
+			self.enableRead.setEnabled(False)
 
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			self.restrictError.setEnabled(False)
@@ -5091,6 +5106,7 @@ class Dialog(QDialog):
 			self.enableGoto.setEnabled(False)
 			self.enableIf.setEnabled(False)
 			self.enableWait.setEnabled(False)
+			self.enableRead.setEnabled(False)
 
 		cmdLayout = QHBoxLayout()
 		cmdLayout.addStretch()
@@ -5107,6 +5123,7 @@ class Dialog(QDialog):
 		cmdLayout2.addWidget(self.enableGoto)
 		cmdLayout2.addWidget(self.enableIf)
 		cmdLayout2.addWidget(self.enableWait)
+		cmdLayout2.addWidget(self.enableRead)
 		cmdLayout2.addStretch()
 
 		self.escapeHTML = QCheckBox(f"Escape HTML in {config.ISSUE_COMMAND_SYMBOL}print and {config.ISSUE_COMMAND_SYMBOL}prints",self)
@@ -6435,6 +6452,7 @@ class Dialog(QDialog):
 		config.PREVENT_ILLEGAL_NICKNAMES = self.prevIllegal.isChecked()
 		config.PREVENT_ILLEGAL_CHANNELS = self.prevChannel.isChecked()
 		config.CHANNEL_MODE_CONTEXT_MENU = self.chanMode.isChecked()
+		config.ENABLE_READ_COMMAND = self.enableRead.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK

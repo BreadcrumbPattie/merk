@@ -14,7 +14,7 @@
  - [Summary](#Summary)
  - [Running MERK on Windows](#running-merk-on-windows)
  - [Running MERK on Linux](#running-merk-on-linux)
- - [Running MERK on macOS] (#running_merk_on_macos)
+ - [Running MERK on macOS] (#running-merk-on-macos)
  - [Running MERK with Python](#running-merk-with-python)
  - [Python Requirements](#python-requirements)
  - [Features](#Features)

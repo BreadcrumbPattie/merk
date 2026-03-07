@@ -14,6 +14,7 @@
  - [Summary](#Summary)
  - [Running MERK on Windows](#running-merk-on-windows)
  - [Running MERK on Linux](#running-merk-on-linux)
+ - [Running MERK on macOS] (#running_merk_on_macos)
  - [Running MERK with Python](#running-merk-with-python)
  - [Python Requirements](#python-requirements)
  - [Features](#Features)
@@ -68,18 +69,22 @@ A note: all command-line arguments, as documented below, work on the all version
 
 # Running MERK on macOS
 
-### Install Python 3.13 with [HomeBrew](https://brew.sh/)
+### Install Python
+First, install Python 3.13 with [HomeBrew](https://brew.sh/).
 
     brew install python@3.13
 
-### Set up a venv
-Be sure be sure to be in the same directory as the `merk.py` file
+### Set up a venv (virtual environment)
+Be sure be sure to be in the same directory as the `merk.py` file.
 
     python3.13 -m venv .venv
     source .venv/bin/activate
-    pip install --upgrade pip                ;; Surely you'd want the newest pip, right?
-    pip install pyqt5 Twisted                ;; Base dependencies
-    pip install pyOpenSSL service_identity   ;; Only strictly needed if you will be connecting over SSL
+    pip install --upgrade pip
+    pip install pyqt5 Twisted
+
+If you'd like to connect to servers via SSL/TLS:
+
+    pip install pyOpenSSL service_identity
 
 ### Run MERK
 

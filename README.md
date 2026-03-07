@@ -69,24 +69,22 @@ A note: all command-line arguments, as documented below, work on the all version
 
 # Running MERK on macOS
 
-### Install Python
 First, install Python 3.13 with [HomeBrew](https://brew.sh/).
 
     brew install python@3.13
 
-### Set up a venv (virtual environment)
-Be sure be sure to be in the same directory as the `merk.py` file.
+With that done, we need to build a virtural environment to run **MERK** in. Be sure be sure to be in the same directory as the `merk.py` file when you run these commands:
 
     python3.13 -m venv .venv
     source .venv/bin/activate
     pip install --upgrade pip
     pip install pyqt5 Twisted
 
-If you'd like to connect to servers via SSL/TLS:
+If you'd like to connect to servers via SSL/TLS, run these commands to install the necessary libraries:
 
     pip install pyOpenSSL service_identity
 
-### Run MERK
+You're all set! You can run **MERK** with:
 
     python merk.py
 

@@ -66,6 +66,26 @@ To run the current development  version of **MERK**, [download this zip file](ht
 
 A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
 
+# Running MERK on macOS
+
+### Install Python 3.13 with [HomeBrew](https://brew.sh/)
+
+    $> brew install python@3.13
+
+### Set up a venv
+* Be sure be sure to be in the same directory as the `merk.py` file
+  
+
+    $> python3.13 -m venv .venv
+    $> source .venv/bin/activate
+    (.venv) $> pip install --upgrade pip                ;; Surely you'd want the newest pip, right?
+    (.venv) $> pip install pyqt5 Twisted                ;; Base dependencies
+    (.venv) $> pip install pyOpenSSL service_identity   ;; Only strictly needed if you will be connecting over SSL
+
+### Run MERK
+
+    $> python merk.py
+
 # Running MERK with Python
 
 First, make sure that all the [requirements](#python-requirements) are installed. Next, [download](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:

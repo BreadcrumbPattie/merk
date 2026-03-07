@@ -73,8 +73,7 @@ A note: all command-line arguments, as documented below, work on the all version
     brew install python@3.13
 
 ### Set up a venv
-* Be sure be sure to be in the same directory as the `merk.py` file
-  
+Be sure be sure to be in the same directory as the `merk.py` file
 
     python3.13 -m venv .venv
     source .venv/bin/activate

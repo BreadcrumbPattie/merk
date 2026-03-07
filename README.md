@@ -73,7 +73,7 @@ First, install Python 3.13 with [HomeBrew](https://brew.sh/).
 
     brew install python@3.13
 
-With that done, we need to build a virtural environment to run **MERK** in. Be sure be sure to be in the same directory as the `merk.py` file when you run these commands:
+Now, [download](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. With that done, we need to build a virtural environment to run **MERK** in. Open a console, and navigate to wherever you extracted **MERK** to, and execute these commands:
 
     python3.13 -m venv .venv
     source .venv/bin/activate

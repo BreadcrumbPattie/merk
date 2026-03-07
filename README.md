@@ -88,6 +88,10 @@ You're all set! You can run **MERK** with:
 
     python merk.py
 
+To run **MERK** from a shortcut or script, have to make sure that the virtual environment is initialized *before* you can run `merk.py`. For example, if you installed **MERK** into `/Users/your_name/merk`, you could execute:
+
+    source /Users/your_name/merk/.venv/bin/activate && /Users/your_name/merk/merk.py
+
 # Running MERK with Python
 
 First, make sure that all the [requirements](#python-requirements) are installed. Next, [download](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:

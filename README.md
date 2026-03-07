@@ -90,7 +90,7 @@ You're all set! You can run **MERK** with:
 
 To run **MERK** from a shortcut or script, have to make sure that the virtual environment is initialized *before* you can run `merk.py`. For example, if you installed **MERK** into `/Users/your_name/merk`, you could execute:
 
-    source /Users/your_name/merk/.venv/bin/activate && /Users/your_name/merk/merk.py
+    source /Users/your_name/merk/.venv/bin/activate && python /Users/your_name/merk/merk.py
 
 # Running MERK with Python
 

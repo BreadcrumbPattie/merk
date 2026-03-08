@@ -258,7 +258,7 @@ class Dialog(QDialog):
 			       Brian, Nancy Hetrick, Nancy Golumbia, Toni<br>
 			       Dewees, Drew Diller, Allison L Perrine, Dust<br>
 			       Machine, Ray Hatfield, Nick Peters, Michael<br>
-			       Clemens, Tommy Olsen, Necrosand
+			       Clemens, Tommy Olsen, Necrosand, Harry Oxnard
 			</small>
 			""")
 		patron_list.setAlignment(Qt.AlignJustify)

@@ -53,6 +53,8 @@
 * Scripts that call "random" or "read" improperly will now no longer execute.
   Also, if aliases are disabled, scripts that contain these commands will no
   longer execute.
+* Added a new plugin example to both the documentation and the repo.
+* Added new tips to the "tips and tricks" dialog.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

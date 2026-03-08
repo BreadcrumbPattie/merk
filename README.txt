@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
-  <i>A multiple-document interface IRC client for Windows and Linux</i><br>
+  <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br>
   <b><big>Current stable release: <a href="!_RELEASE_URL_!">MERK !_RELEASE_!</a></big></b><br>
   <b>Current development version: !_FULL_VERSION_!</b><br>
   <b><a href="https://merk.chat">Visit us at https://merk.chat!</a></b><br><br>
@@ -14,6 +14,7 @@
  - [Summary](#Summary)
  - [Running MERK on Windows](#running-merk-on-windows)
  - [Running MERK on Linux](#running-merk-on-linux)
+ - [Running MERK on macOS](#running-merk-on-macos)
  - [Running MERK with Python](#running-merk-with-python)
  - [Python Requirements](#python-requirements)
  - [Features](#Features)
@@ -48,7 +49,7 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 
 **MERK** is still in active development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version !_RELEASE_!](!_RELEASE_URL_!). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf). The [CHANGELOG](./CHANGELOG) reflects changes in the client in [the current development version](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) which will be present in the next release.
 
-Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at **irc.libera.chat**, port **6667** (you can also connect via SSL on port **6697**). I'm also an [IRCop](https://en.wikipedia.org/wiki/IRC_operator) on MansionNET! I'm usually in **#merk** and **#lobby** at **irc.inthemansion.com** on port **6697**.
+Join me on the official **MERK** IRC channel, **#merk** on the MansionNET network! Connect to  MansionNET in the client as one of the built-in server suggestions, or at **irc.inthemansion.com**, port **6697** (via SSL). I'm also an [IRCop](https://en.wikipedia.org/wiki/IRC_operator) on MansionNET! I'm usually in **#merk** and **#lobby**.
 
 # Running MERK on Windows
 **MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. [You can download the current stable release (!_RELEASE_!) here](!_RELEASE_URL_!). For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf).
@@ -63,6 +64,33 @@ A note: all command-line arguments, as documented below, work on the all version
 **MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf). **MERK** supports both [X11](https://www.x.org/wiki/) and [Wayland](https://wayland.freedesktop.org/).
 
 To run the current development  version of **MERK**, [download this zip file](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1) and unzip to any directory, and double click on `merk` to run the client, or execute  `merk` from a console window.
+
+A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
+
+# Running MERK on macOS
+
+First, install Python 3.13 with [HomeBrew](https://brew.sh/).
+
+    brew install python@3.13
+
+Now, [download](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. With that done, we need to build a virtural environment to run **MERK** in. Open a console, and navigate to wherever you extracted **MERK** to, and execute these commands:
+
+    python3.13 -m venv .venv
+    source .venv/bin/activate
+    pip install --upgrade pip
+    pip install pyqt5 Twisted
+
+If you'd like to connect to servers via SSL/TLS, run these commands to install the necessary libraries:
+
+    pip install pyOpenSSL service_identity
+
+You're all set! You can run **MERK** with:
+
+    python merk.py
+
+To run **MERK** from a shortcut or script, have to make sure that the virtual environment is initialized *before* you can run `merk.py`. For example, if you installed **MERK** into `/Users/your_name/merk`, you could execute:
+
+    source /Users/your_name/merk/.venv/bin/activate && python /Users/your_name/merk/merk.py
 
 A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
 
@@ -111,7 +139,7 @@ There are four libraries that comes bundled with **MERK**:
     - Extensive command-line options
         - Over 30 different command-line flags, allowing for connecting to multiple servers on startup, disabling or enabling options, and more
     - Dark mode
-    -   Full scripting engine
+    - Full scripting engine
         - Includes a built in script editor, with command generators and syntax highlighting
         - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
         - Scripts have rudimentary flow control, including `if` and `goto`
@@ -473,6 +501,6 @@ Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetric
  - **DCC chat and file transfers**. The DCC  functionality in Twisted is undocumented, and I'll be honest, I can't make heads or tails of it. I'd love to be able to add this functionality to **MERK**, but I need help!
  - **Using MERK and giving me feedback**. Let me know what you love about **MERK** and what you hate about **MERK**! Got ideas for ways you'd like to customize the client? Features you'd like? Let me know! I can't guarantee that I'll put in everything that you want, but I love hearing new ideas, and I love hearing about how people are using **MERK**!
 
-Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: `#merk` on the Libera network (`irc.libera.chat`, port 6667 for TCP/IP and port 6697 for SSL). I'm also an IRCop on MansionNET; I'm usually in **#merk** and **#lobby** at **irc.inthemansion.com** on port **6697**, connectable via SSL/TLS.
+Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: **#merk** on the MansionNET network (`irc.inthemansion.com`, port 6697 for SSL). I'm also an IRCop on MansionNET; I'm usually in **#merk** and **#lobby**.
 
 [//]: # (End of document)

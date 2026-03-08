@@ -28,6 +28,14 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
+SSL_AVAILABLE = True
+try:
+	from twisted.internet import ssl
+except ImportError as error:
+	SSL_AVAILABLE = False
+except Exception as exception:
+	pass
+
 from ..resources import *
 from .. import config
 
@@ -58,7 +66,6 @@ TIPS = [
  f'Use the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}maximize</b></nobr> command to maximize a chat window!',
  f'Use the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}minimize</b></nobr> command to minimize a chat window!',
  f'Use <nobr><b>{config.ISSUE_COMMAND_SYMBOL}connect</b></nobr> to connect to another server!',
- f'<b>{APPLICATION_NAME}</b> can connect to IRC servers via <b>TCP/IP</b> or <b>SSL/TLS</b>!',
  f'Nicknames and channel names are unique on an IRC network!',
  f'The default server port for IRC is <b>6667</b> (<b>6697</b> for SSL/TLS)!',
  f'Unlike <b>Discord</b> or <b>Slack</b>, no single company owns IRC. Anyone can run their own server!',
@@ -132,7 +139,6 @@ TIPS = [
  f'Almost every aspect of <b>{APPLICATION_NAME}</b>\'s interface can be changed or modified!',
  f'Check the official <b><a href=\"{APPLICATION_SOURCE}\">{APPLICATION_NAME} homepage</a></b>. <b>{APPLICATION_NAME}</b> is updated often!',
  f'The Linux binary for <b>{APPLICATION_NAME}</b>\'s supports both <b>Wayland</b> and <b>X11</b>!',
- f'Connections via <b>SSL/TLS</b> are completely encrypted!',
  f'<nobr><b>{config.ISSUE_COMMAND_SYMBOL}config</b></nobr> can be used to edit the configuration file manually!',
  f'IRC was created in 1988 to replace the limited store-and-forward chat of <b>BITNET\'s Relay</b>!',
  f'A <b>netsplit</b> occurs when servers in a network lose connection, temporarily splitting the user base!',
@@ -144,7 +150,17 @@ TIPS = [
  f'The top 5 IRC networks are <a href=\"https://libera.chat/\">Libera Chat</a>, <a href=\"https://www.ircnet.com/\">IRCnet</a>, <a href=\"https://www.efnet.org/\">EFnet</a>, <a href=\"https://www.undernet.org/\">Undernet</a>, and <a href=\"https://www.quakenet.org/\">QuakeNet</a>!',
  f'While IRC is officially assigned <b>port 194</b> by the <a href=\"https://iana.org/\">IANA</a>, it almost never uses it!',
  f'IRC\'s technical limitations (no images, text only) forced the massive popularization of <b>ASCII art</b>!',
+ f'<b>{APPLICATION_NAME}</b> runs identically on <b>Windows</b>, <b>Linux</b>, and <b>macOS</b>!',
+ f'The Windows binary for <b>{APPLICATION_NAME}</b> runs without needing a Python installation!',
 ]
+
+if SSL_AVAILABLE:
+	i = [
+		f'<b>{APPLICATION_NAME}</b> can connect to IRC servers via <b>TCP/IP</b> or <b>SSL/TLS</b>!',
+		f'Connections via <b>SSL/TLS</b> are completely encrypted!',
+		f'Most IRC servers support both <b>SSL/TLS</b> and <b>TCP/IP</b> connections!',
+	]
+	TIPS = TIPS + i
 
 if config.ENABLE_IGNORE:
 	i = [
@@ -197,6 +213,8 @@ if config.SCRIPTING_ENGINE_ENABLED:
 		f'Want to automate your server connections? Start writing <b>connections scripts</b>!',
 		f'Scripts can use special <b>script-only commands</b>, allowing them to "pause" or prevent execution in certain windows!',
 		f'Create your own commands with the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}macro</b></nobr> command!',
+		f'There are 14 commands that can only be used in scripts!',
+		f'<b>{APPLICATION_NAME}</b> has over 80 commands!',
 	]
 	TIPS = TIPS + s
 
